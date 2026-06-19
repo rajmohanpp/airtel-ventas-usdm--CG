@@ -214,9 +214,12 @@ td.dim{color:var(--text2);font-size:12px}
 
     <div class="modal-section">Role &amp; Access</div>
     <div class="modal-grid full">
-      <label>Role(s) &mdash; type and press Enter to add multiple
-        <div class="tag-input-wrap" id="nu-roles-wrap" onclick="document.getElementById('nu-role-input').focus()">
-          <input type="text" id="nu-role-input" placeholder="Type a role and press Enter&#8230;" onkeydown="handleRoleKey(event,'nu-roles-wrap')"/>
+      <label><span class="lbl">Role(s) &mdash; select from dropdown to add multiple</span>
+        <select id="nu-role-select" onchange="addRoleFromSelect(this,'nu-roles-wrap')">
+          <option value="">&#8212; Select a role &#8212;</option>
+        </select>
+        <div class="tag-input-wrap" id="nu-roles-wrap" style="margin-top:6px;min-height:36px">
+          <span style="font-size:11px;color:var(--text3);padding:2px 4px" id="nu-roles-placeholder">No roles selected yet</span>
         </div>
       </label>
     </div>
@@ -499,7 +502,7 @@ function renderTable() {
       // render existing role chips
       var existingRoles=(u.role_name||'').split(',').map(function(r){return r.trim();}).filter(Boolean);
       existingRoles.forEach(function(r){
-        html+='<span class="tag-chip">'+esc(r)+'<span class="rm" onclick="removeTag(this,\'edit-roles-wrap\')">&#215;</span></span>';
+        html+='<span class="tag-chip" data-value="'+esc(r)+'">'+esc(r)+'<span class="rm" onclick="removeTag(this,\'edit-roles-wrap\')"> &times;</span></span>';
       });
       html+='<input type="text" id="edit-role-input" list="role-suggestions" placeholder="Add role&#8230;" onkeydown="handleRoleKey(event,\'edit-roles-wrap\')">';
       html+='</div></label>';
@@ -538,18 +541,38 @@ function handleRoleKey(e, wrapId) {
 function addTag(val, wrapId) {
   var wrap=document.getElementById(wrapId);
   var inp=wrap.querySelector('input');
-  // Prevent duplicate
-  var existing=Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){return c.textContent.replace('×','').trim();});
+  // Prevent duplicate using data-value
+  var existing=Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){return c.getAttribute('data-value')||'';});
   if (existing.indexOf(val)>=0) return;
   var chip=document.createElement('span');
   chip.className='tag-chip';
-  chip.innerHTML=esc(val)+'<span class="rm" onclick="removeTag(this,\''+wrapId+'\')">&#215;</span>';
-  wrap.insertBefore(chip, inp);
+  chip.setAttribute('data-value', val);
+  chip.innerHTML=esc(val)+'<span class="rm" onclick="removeTag(this,\''+wrapId+'\')"> &times;</span>';
+  if (inp) wrap.insertBefore(chip, inp); else wrap.appendChild(chip);
+}
+
+function addRoleFromSelect(sel, wrapId) {
+  var val=(sel.value||'').trim();
+  if (!val) return;
+  var wrap=document.getElementById(wrapId);
+  // Hide placeholder
+  var ph=document.getElementById('nu-roles-placeholder');
+  if (ph) ph.style.display='none';
+  // Prevent duplicate
+  var existing=Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){return c.textContent.replace('×','').trim();});
+  if (existing.indexOf(val)<0) {
+    var chip=document.createElement('span');
+    chip.className='tag-chip';
+    chip.setAttribute('data-value', val);
+    chip.innerHTML=esc(val)+'<span class="rm" onclick="removeTag(this,\''+wrapId+'\')"> &times;</span>';
+    wrap.appendChild(chip);
+  }
+  sel.value=''; // reset dropdown
 }
 function removeTag(rmEl, wrapId) { rmEl.parentElement.remove(); }
 function getTagValues(wrapId) {
   var wrap=document.getElementById(wrapId);
-  return Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){ return c.textContent.replace('×','').trim(); });
+  return Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){ return c.getAttribute('data-value')||''; }).filter(Boolean);
 }
 
 // ─── Audit render ──────────────────────────────────────────────────────
@@ -641,7 +664,13 @@ function openAddUser() {
   // Reset roles
   var wrap=document.getElementById('nu-roles-wrap');
   wrap.querySelectorAll('.tag-chip').forEach(function(c){c.remove();});
-  document.getElementById('nu-role-input').value='';
+  var ph=document.getElementById('nu-roles-placeholder');
+  if(ph) ph.style.display='';
+  // Populate role dropdown
+  var rsel=document.getElementById('nu-role-select');
+  rsel.innerHTML='<option value="">&#8212; Select a role &#8212;</option>';
+  ROLES.forEach(function(r){ var o=document.createElement('option'); o.value=r; o.textContent=r; rsel.appendChild(o); });
+  rsel.value='';
   // Populate warehouse dropdown
   var wsel=document.getElementById('nu-warehouse');
   wsel.innerHTML='<option value="">— none —</option>';
