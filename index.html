@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Airtel Ventas USDM 2.0 · User Explorer</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg:#0a1628;--bg2:#0f2040;--bg3:#1a3356;--surface:#0f2040;
+  --border:#1e3a5f;--text:#e2eaf6;--text2:#8aa4c8;--text3:#4d7099;
+  --accent:#3b82f6;--accent2:#2563eb;--accent-t:rgba(59,130,246,.12);
+  --radius:10px;--radius-sm:6px;--shadow:0 4px 24px rgba(0,0,0,.5);
+  --tag-active-t:#22c55e;--tag-inactive-t:#ef4444;--tag-pending-t:#f59e0b;
+  --tag-notact-t:#94a3b8;--tag-susp-t:#a855f7;
+  --tag-active:rgba(34,197,94,.15);--tag-inactive:rgba(239,68,68,.15);
+  --tag-pending:rgba(245,158,11,.15);--tag-notact:rgba(148,163,184,.12);
+  --tag-susp:rgba(168,85,247,.15);
+}
+[data-theme="arctic"]{--bg:#f0f4f8;--bg2:#fff;--bg3:#e2e8f0;--surface:#fff;--border:#e2e8f0;--text:#1e293b;--text2:#475569;--text3:#94a3b8;--accent:#2563eb;--accent-t:rgba(37,99,235,.08);--shadow:0 2px 16px rgba(0,0,0,.10);}
+[data-theme="emerald"]{--bg:#071a0e;--bg2:#0d2b16;--bg3:#1a4a2a;--surface:#0d2b16;--border:#1a4a2a;--text:#d1fae5;--text2:#6ee7b7;--text3:#34d399;--accent:#10b981;--accent-t:rgba(16,185,129,.15);}
+[data-theme="crimson"]{--bg:#1a0508;--bg2:#2d0a10;--bg3:#4a1020;--surface:#2d0a10;--border:#4a1020;--text:#ffe4e6;--text2:#fda4af;--text3:#f43f5e;--accent:#f43f5e;--accent-t:rgba(244,63,94,.15);}
+[data-theme="sunset"]{--bg:#1a0e00;--bg2:#2d1a00;--bg3:#4a2e00;--surface:#2d1a00;--border:#4a2e00;--text:#fef3c7;--text2:#fcd34d;--text3:#f59e0b;--accent:#f59e0b;--accent-t:rgba(245,158,11,.15);}
+[data-theme="purple"]{--bg:#0f0520;--bg2:#1a0a38;--bg3:#2d1258;--surface:#1a0a38;--border:#2d1258;--text:#ede9fe;--text2:#c4b5fd;--text3:#8b5cf6;--accent:#8b5cf6;--accent-t:rgba(139,92,246,.15);}
+[data-theme="ocean"]{--bg:#00181e;--bg2:#002a35;--bg3:#00445a;--surface:#002a35;--border:#00445a;--text:#ccfbf1;--text2:#5eead4;--text3:#14b8a6;--accent:#14b8a6;--accent-t:rgba(20,184,166,.15);}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+.logo{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.logo span{color:var(--accent)}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.theme-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;cursor:pointer;transition:.2s}
+.theme-btn:hover{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
+.stat-pill{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text2)}
+.stat-pill b{color:var(--text)}
+
+.controls{padding:16px 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--bg);border-bottom:1px solid var(--border)}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:380px}
+.search-wrap input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:9px 12px 9px 36px;border-radius:var(--radius-sm);font-size:13px;outline:none;transition:.2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px}
+select{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;outline:none;cursor:pointer}
+select:focus{border-color:var(--accent)}
+.tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px}
+.tab{padding:7px 18px;border-radius:5px;font-size:13px;cursor:pointer;color:var(--text2);transition:.2s;border:none;background:transparent}
+.tab.active{background:var(--accent);color:#fff;font-weight:600}
+.tab:not(.active):hover{background:var(--accent-t);color:var(--accent)}
+.refresh-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:9px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
+.refresh-btn:hover{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
+
+.table-wrap{padding:0 24px 24px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
+thead th{background:var(--bg2);color:var(--text2);font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:.15s}
+tbody tr:hover{background:var(--accent-t)}
+tbody tr.editing{background:var(--accent-t);outline:1px solid var(--accent)}
+td{padding:10px 14px;vertical-align:middle;color:var(--text)}
+td.dim{color:var(--text2);font-size:12px}
+.no-data{text-align:center;padding:60px 20px;color:var(--text3)}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-1{background:var(--tag-active);color:var(--tag-active-t)}
+.badge-0{background:var(--tag-inactive);color:var(--tag-inactive-t)}
+.badge-6{background:var(--tag-notact);color:var(--tag-notact-t)}
+.badge-2{background:var(--tag-susp);color:var(--tag-susp-t)}
+.badge-5{background:var(--tag-pending);color:var(--tag-pending-t)}
+.dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+.edit-row td{padding:12px 14px;background:var(--bg3)}
+.edit-form{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.edit-form input,.edit-form select{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:var(--radius-sm);font-size:13px;outline:none}
+.edit-form input:focus,.edit-form select:focus{border-color:var(--accent)}
+.edit-form label{font-size:11px;color:var(--text2);display:flex;flex-direction:column;gap:4px}
+.btn{padding:7px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.btn-save{background:var(--accent);color:#fff}
+.btn-save:hover{background:var(--accent2)}
+.btn-save:disabled{opacity:.5;cursor:not-allowed}
+.btn-cancel{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+.btn-cancel:hover{background:var(--bg3)}
+.edit-hint{font-size:11px;color:var(--text3);align-self:center}
+
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px}
+.spinner{width:38px;height:38px;border:3px solid var(--bg3);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-box{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);border-radius:var(--radius);padding:20px 24px;margin:24px;color:#fca5a5}
+.error-box h3{margin-bottom:8px}
+.error-box p{margin-top:6px;font-size:13px;line-height:1.6}
+
+#toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 18px;font-size:13px;color:var(--text);box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:.3s;z-index:999;max-width:320px}
+#toast.show{transform:none;opacity:1}
+#toast.success{border-color:#22c55e;color:#22c55e}
+#toast.error{border-color:#ef4444;color:#ef4444}
+
+#theme-panel{position:fixed;top:60px;right:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:none;z-index:200;box-shadow:var(--shadow)}
+#theme-panel.open{display:block}
+.theme-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:180px}
+.theme-opt{padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;text-align:center;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:.2s}
+.theme-opt:hover,.theme-opt.active{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Airtel Ventas <span>USDM 2.0</span> &middot; User Explorer</div>
+  <div class="stat-pill"><b id="stat-total">&#8211;</b> users</div>
+  <div class="stat-pill"><b id="stat-active">&#8211;</b> active</div>
+  <div class="header-right">
+    <button class="theme-btn" onclick="toggleThemePanel()">&#127912; Theme</button>
+  </div>
+</div>
+
+<div id="theme-panel">
+  <div class="theme-opts">
+    <div class="theme-opt active" onclick="setTheme('')">Navy</div>
+    <div class="theme-opt" onclick="setTheme('arctic')">Arctic</div>
+    <div class="theme-opt" onclick="setTheme('emerald')">Emerald</div>
+    <div class="theme-opt" onclick="setTheme('crimson')">Crimson</div>
+    <div class="theme-opt" onclick="setTheme('sunset')">Sunset</div>
+    <div class="theme-opt" onclick="setTheme('purple')">Purple</div>
+    <div class="theme-opt" onclick="setTheme('ocean')">Ocean</div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('all',this)">All</button>
+    <button class="tab" onclick="setTab('internal',this)">Internal</button>
+    <button class="tab" onclick="setTab('external',this)">External</button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input type="text" id="search" placeholder="Search name, email, role&#8230;" oninput="renderTable()"/>
+  </div>
+  <select id="status-filter" onchange="renderTable()">
+    <option value="">All statuses</option>
+    <option value="1">Active</option>
+    <option value="0">Inactive</option>
+    <option value="6">Not Activated</option>
+    <option value="2">Suspended</option>
+    <option value="5">Pending</option>
+  </select>
+  <button class="refresh-btn" onclick="loadData()">&#8635; Refresh</button>
+</div>
+
+<div id="loading"><div class="spinner"></div><p id="loading-msg">Connecting to database&hellip;</p></div>
+<div id="error-area"></div>
+<div class="table-wrap" id="table-wrap" style="display:none">
+  <table>
+    <thead id="thead"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// =====================================================================
+// CONFIGURATION — replace these two values with your Supabase credentials
+// =====================================================================
+var SUPABASE_URL = 'https://vgiwqwaqbitynwfekuip.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnaXdxd2FxYml0eW53ZmVrdWlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NjExMDIsImV4cCI6MjA5NzQzNzEwMn0.CNd5gP4iWeXZ7bZ-Jsur9awPtQrpcySHBiWr7OG5D3Q';
+// =====================================================================
+
+var db;
+var WH  = {};   // warehouse_id -> warehouse_name
+var INT = [];   // internal users array
+var EXT = [];   // external users array
+var currentTab = 'all';
+var editingUserId = null;
+var editingType   = null;
+
+var STATUS_LABELS = { '1':'Active','0':'Inactive','6':'Not Activated','2':'Suspended','5':'Pending' };
+
+// Init
+window.onload = function() {
+  // Restore theme
+  var savedTheme = localStorage.getItem('usdm-theme') || '';
+  if (savedTheme) setTheme(savedTheme);
+
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    showLoading(false);
+    showError('Supabase not configured',
+      'Open this HTML file in a text editor and replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY with your Supabase project credentials. See the setup guide for details.');
+    return;
+  }
+
+  try {
+    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } catch(e) {
+    showError('Failed to initialise Supabase client', e.message);
+    return;
+  }
+  loadData();
+};
+
+// ── Load data ──────────────────────────────────────────────────────────
+async function loadData() {
+  showLoading(true);
+  hideError();
+  try {
+    var results = await Promise.all([
+      db.from('warehouses').select('*').order('warehouse_name'),
+      db.from('internal_users').select('*').order('first_name'),
+      db.from('external_users').select('*').order('first_name')
+    ]);
+    var whRes = results[0], intRes = results[1], extRes = results[2];
+    if (whRes.error)  throw whRes.error;
+    if (intRes.error) throw intRes.error;
+    if (extRes.error) throw extRes.error;
+
+    WH = {};
+    (whRes.data || []).forEach(function(w) { WH[w.warehouse_id] = w.warehouse_name; });
+    INT = (intRes.data || []).map(function(u) { return Object.assign({}, u, {_type:'internal'}); });
+    EXT = (extRes.data || []).map(function(u) { return Object.assign({}, u, {_type:'external'}); });
+
+    updateStats();
+    renderTable();
+    showLoading(false);
+  } catch(err) {
+    showError('Failed to load data', (err && err.message) ? err.message : String(err));
+  }
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────
+function updateStats() {
+  var all = INT.concat(EXT);
+  document.getElementById('stat-total').textContent  = all.length;
+  document.getElementById('stat-active').textContent = all.filter(function(u){ return u.status === '1'; }).length;
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  editingUserId = null;
+  editingType   = null;
+  renderTable();
+}
+
+// ── Filter rows ────────────────────────────────────────────────────────
+function getRows() {
+  var rows = currentTab === 'internal' ? INT.slice()
+           : currentTab === 'external' ? EXT.slice()
+           : INT.concat(EXT);
+  var q  = (document.getElementById('search').value || '').toLowerCase();
+  var st = document.getElementById('status-filter').value;
+  if (q) {
+    rows = rows.filter(function(u) {
+      return (u.first_name||'').toLowerCase().indexOf(q)>=0
+          || (u.last_name||'').toLowerCase().indexOf(q)>=0
+          || (u.user_name||'').toLowerCase().indexOf(q)>=0
+          || (u.email_id||'').toLowerCase().indexOf(q)>=0
+          || (u.role_name||'').toLowerCase().indexOf(q)>=0
+          || (u.user_id||'').toLowerCase().indexOf(q)>=0;
+    });
+  }
+  if (st) rows = rows.filter(function(u){ return u.status === st; });
+  return rows;
+}
+
+// ── Render table ───────────────────────────────────────────────────────
+function renderTable() {
+  var rows   = getRows();
+  var showWH = currentTab !== 'external';
+  var showPT = currentTab !== 'internal';
+  var showTY = currentTab === 'all';
+
+  // Header
+  var th = '<tr>';
+  th += '<th>User ID</th><th>Name</th><th>Email</th><th>Role</th>';
+  if (showWH) th += '<th>Warehouse</th>';
+  if (showPT) th += '<th>Partner ID</th>';
+  if (showTY) th += '<th>Type</th>';
+  th += '<th>Status</th><th>Action</th></tr>';
+  document.getElementById('thead').innerHTML = th;
+
+  var tbody = document.getElementById('tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
+    document.getElementById('table-wrap').style.display = '';
+    return;
+  }
+
+  var html = '';
+  rows.forEach(function(u) {
+    var isEditing = editingUserId === u.user_id && editingType === u._type;
+    var name = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.user_name || '&mdash;';
+    var wName = WH[u.warehouse_id] || u.warehouse_id || '&mdash;';
+
+    html += '<tr class="' + (isEditing ? 'editing' : '') + '" id="row-' + u._type + '-' + esc(u.user_id) + '">';
+    html += '<td class="dim">' + esc(u.user_id) + '</td>';
+    html += '<td><b>' + esc(name) + '</b></td>';
+    html += '<td class="dim">' + esc(u.email_id || '—') + '</td>';
+    html += '<td>' + esc(u.role_name || '—') + '</td>';
+    if (showWH) {
+      if (u._type === 'internal') html += '<td class="dim">' + esc(wName) + '</td>';
+      else if (!showTY)           html += '<td class="dim">&mdash;</td>';
+      else                        html += '<td class="dim">&mdash;</td>';
+    }
+    if (showPT) {
+      if (u._type === 'external') html += '<td class="dim">' + esc(u.partner_id || '—') + '</td>';
+      else                        html += '<td class="dim">&mdash;</td>';
+    }
+    if (showTY) {
+      html += '<td><span class="badge" style="background:var(--accent-t);color:var(--accent)">'
+            + (u._type === 'internal' ? 'Internal' : 'External') + '</span></td>';
+    }
+    html += '<td>' + badge(u.status) + '</td>';
+    html += '<td><button class="btn btn-cancel" style="font-size:11px;padding:5px 10px" '
+          + 'onclick="startEdit(\'' + esc(u.user_id) + '\',\'' + u._type + '\')">&#9998; Edit</button></td>';
+    html += '</tr>';
+
+    if (isEditing) {
+      var whOptions = Object.keys(WH).map(function(id) {
+        return '<option value="' + esc(id) + '"' + (u.warehouse_id === id ? ' selected' : '') + '>'
+             + esc(WH[id]) + ' (' + esc(id) + ')</option>';
+      }).join('');
+      var stOptions = Object.keys(STATUS_LABELS).map(function(v) {
+        return '<option value="' + v + '"' + (u.status === v ? ' selected' : '') + '>' + STATUS_LABELS[v] + '</option>';
+      }).join('');
+
+      html += '<tr class="edit-row"><td colspan="9"><div class="edit-form">'
+            + '<label>Role Name<input id="edit-role" value="' + esc(u.role_name || '') + '" style="width:220px"/></label>';
+      if (u._type === 'internal') {
+        html += '<label>Warehouse<select id="edit-wh"><option value="">&mdash; none &mdash;</option>' + whOptions + '</select></label>';
+      }
+      html += '<label>Status<select id="edit-status">' + stOptions + '</select></label>'
+            + '<button class="btn btn-save" id="save-btn" onclick="saveEdit(\'' + esc(u.user_id) + '\',\'' + u._type + '\')">&#128190; Save</button>'
+            + '<button class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>'
+            + '<span class="edit-hint">Changes save to the database</span>'
+            + '</div></td></tr>';
+    }
+  });
+  tbody.innerHTML = html;
+  document.getElementById('table-wrap').style.display = '';
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function badge(status) {
+  var label = STATUS_LABELS[status] || status;
+  return '<span class="badge badge-' + status + '"><span class="dot"></span>' + label + '</span>';
+}
+
+// ── Edit ───────────────────────────────────────────────────────────────
+function startEdit(userId, type) {
+  if (editingUserId === userId && editingType === type) { cancelEdit(); return; }
+  editingUserId = userId;
+  editingType   = type;
+  renderTable();
+  setTimeout(function() {
+    var row = document.getElementById('row-' + type + '-' + userId);
+    if (row) row.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 50);
+}
+
+function cancelEdit() {
+  editingUserId = null;
+  editingType   = null;
+  renderTable();
+}
+
+async function saveEdit(userId, type) {
+  var btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  var role   = document.getElementById('edit-role').value.trim();
+  var status = document.getElementById('edit-status').value;
+  var updates = { role_name: role, status: status };
+
+  if (type === 'internal') {
+    var whEl = document.getElementById('edit-wh');
+    updates.warehouse_id = whEl ? (whEl.value || null) : null;
+  }
+
+  try {
+    var table = type === 'internal' ? 'internal_users' : 'external_users';
+    var result = await db.from(table).update(updates).eq('user_id', userId);
+    if (result.error) throw result.error;
+
+    // Update local cache
+    var arr = type === 'internal' ? INT : EXT;
+    var idx = arr.findIndex(function(u){ return u.user_id === userId; });
+    if (idx >= 0) arr[idx] = Object.assign({}, arr[idx], updates);
+
+    updateStats();
+    cancelEdit();
+    toast('Saved successfully', 'success');
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = '💾 Save';
+    toast('Save failed: ' + ((err && err.message) ? err.message : String(err)), 'error');
+  }
+}
+
+// ── Theme ──────────────────────────────────────────────────────────────
+function setTheme(name) {
+  document.documentElement.setAttribute('data-theme', name);
+  localStorage.setItem('usdm-theme', name);
+  document.querySelectorAll('.theme-opt').forEach(function(el) {
+    el.classList.toggle('active', el.textContent.toLowerCase() === (name || 'navy'));
+  });
+  document.getElementById('theme-panel').classList.remove('open');
+}
+function toggleThemePanel() {
+  document.getElementById('theme-panel').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#theme-panel') && !e.target.closest('.theme-btn'))
+    document.getElementById('theme-panel').classList.remove('open');
+});
+
+// ── Toast ──────────────────────────────────────────────────────────────
+var toastTimer;
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + (type || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.className = ''; }, 3500);
+}
+
+// ── Loading / Error ────────────────────────────────────────────────────
+function showLoading(show) {
+  document.getElementById('loading').style.display = show ? 'flex' : 'none';
+  if (!show) document.getElementById('table-wrap').style.display = '';
+}
+function showError(title, detail) {
+  showLoading(false);
+  document.getElementById('table-wrap').style.display = 'none';
+  document.getElementById('error-area').innerHTML =
+    '<div class="error-box"><h3>&#9888;&#65039; ' + esc(title) + '</h3>'
+    + '<p>' + esc(detail || '') + '</p>'
+    + '<p>Make sure SUPABASE_URL and SUPABASE_KEY at the top of this file are set correctly.</p></div>';
+}
+function hideError() {
+  document.getElementById('error-area').innerHTML = '';
+}
+</script>
+</body>
+</html>
