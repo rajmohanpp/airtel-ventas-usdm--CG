@@ -620,35 +620,58 @@ async function saveEdit(userId, type) {
   var btn=document.getElementById('save-btn');
   btn.disabled=true; btn.textContent='Saving…';
 
-  var roles   = getTagValues('edit-roles-wrap').join(', ');
+  // Read values from DOM
+  var roleChips = getTagValues('edit-roles-wrap');
+  var roles     = roleChips.join(', ');
   var newStatus = document.getElementById('edit-status').value;
-  var newWh   = type==='internal'?(document.getElementById('edit-wh')||{}).value||null:undefined;
-  var updates = {role_name:roles, status:newStatus};
-  if (type==='internal') updates.warehouse_id=newWh||null;
+  var whEl      = document.getElementById('edit-wh');
+  var newWh     = (type==='internal' && whEl) ? (whEl.value || null) : null;
 
-  var arr=type==='internal'?INT:EXT;
-  var old=arr.find(function(u){return u.user_id===userId;})||{};
+  // Build update payload — always send role_name explicitly
+  var updates = { role_name: roles, status: newStatus };
+  if (type==='internal') updates.warehouse_id = newWh;
+
+  var arr = type==='internal' ? INT : EXT;
+  var old = arr.find(function(u){ return u.user_id===userId; }) || {};
+
+  console.log('[saveEdit] userId='+userId+' roles="'+roles+'" status='+newStatus+' chips='+JSON.stringify(roleChips));
 
   try {
-    var table=type==='internal'?'internal_users':'external_users';
-    var res=await db.from(table).update(updates).eq('user_id',userId);
+    var table = type==='internal' ? 'internal_users' : 'external_users';
+
+    // Use .select() so Supabase returns what was actually written
+    var res = await db.from(table).update(updates).eq('user_id', userId).select();
     if (res.error) throw res.error;
 
-    var changedBy=currentUser.name+(currentUser.email?' ('+currentUser.email+')':'');
-    var uName=[old.first_name,old.last_name].filter(Boolean).join(' ')||old.user_name||userId;
-    var auditRows=[];
-    function ar(field,ov,nv){ auditRows.push({table_name:table,record_id:userId,user_name:uName,field:field,old_value:String(ov||''),new_value:String(nv||''),changed_by:changedBy}); }
-    if (old.role_name!==roles) ar('role_name',old.role_name,roles);
-    if (old.status!==newStatus) ar('status',STATUS_LABELS[old.status]||old.status,STATUS_LABELS[newStatus]||newStatus);
-    if (type==='internal'&&old.warehouse_id!==(newWh||null)) ar('warehouse_id',WH[old.warehouse_id]||old.warehouse_id,WH[newWh]||newWh||'(none)');
-    if (auditRows.length){ var ar2=await db.from('audit_log').insert(auditRows); if(ar2.error) console.warn('Audit:',ar2.error.message); }
+    // Warn if no rows were matched (silent RLS / key mismatch)
+    if (!res.data || res.data.length === 0) {
+      throw new Error('No rows updated — user_id "'+userId+'" not found in '+table+'. Check the Supabase RLS policy for UPDATE.');
+    }
 
-    var idx=arr.findIndex(function(u){return u.user_id===userId;});
-    if (idx>=0) arr[idx]=Object.assign({},arr[idx],updates);
-    updateStats(); cancelEdit(); toast('Saved & logged','success');
+    // Update local cache from actual DB response (ground truth)
+    var saved = res.data[0];
+    var idx   = arr.findIndex(function(u){ return u.user_id===userId; });
+    if (idx>=0) arr[idx] = Object.assign({}, arr[idx], saved);
+
+    // Audit log
+    var changedBy = currentUser.name+(currentUser.email?' ('+currentUser.email+')':'');
+    var uName     = [old.first_name,old.last_name].filter(Boolean).join(' ')||old.user_name||userId;
+    var auditRows = [];
+    function addAudit(field,ov,nv){ auditRows.push({table_name:table,record_id:userId,user_name:uName,field:field,old_value:String(ov||''),new_value:String(nv||''),changed_by:changedBy}); }
+    if (old.role_name !== saved.role_name)    addAudit('role_name', old.role_name, saved.role_name);
+    if (old.status    !== saved.status)       addAudit('status', STATUS_LABELS[old.status]||old.status, STATUS_LABELS[saved.status]||saved.status);
+    if (type==='internal' && old.warehouse_id !== saved.warehouse_id)
+      addAudit('warehouse_id', WH[old.warehouse_id]||old.warehouse_id, WH[saved.warehouse_id]||saved.warehouse_id||'(none)');
+    if (auditRows.length) {
+      var aRes = await db.from('audit_log').insert(auditRows);
+      if (aRes.error) console.warn('Audit log failed:', aRes.error.message);
+    }
+
+    updateStats(); cancelEdit();
+    toast('Saved — role: '+(saved.role_name||'(none)'), 'success');
   } catch(err){
-    btn.disabled=false; btn.textContent='💾 Save';
-    toast('Save failed: '+((err&&err.message)||String(err)),'error');
+    btn.disabled=false; btn.textContent='Save';
+    toast('Save failed: '+((err&&err.message)||String(err)), 'error');
   }
 }
 
