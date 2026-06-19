@@ -496,16 +496,19 @@ function renderTable() {
         return '<option value="'+v+'"'+(u.status===v?' selected':'')+'>'+STATUS_LABELS[v]+'</option>';
       }).join('');
 
+      // Build role options for dropdown
+      var roleOpts = ROLES.map(function(r){
+        return '<option value="'+esc(r)+'">'+esc(r)+'</option>';
+      }).join('');
+
       html+='<tr class="edit-row"><td colspan="9"><div class="edit-form">';
-      html+='<label style="flex:1;min-width:280px">Role(s) &mdash; press Enter to add';
-      html+='<div class="tag-input-wrap" id="edit-roles-wrap" onclick="document.getElementById(\'edit-role-input\').focus()">';
-      // render existing role chips
-      var existingRoles=(u.role_name||'').split(',').map(function(r){return r.trim();}).filter(Boolean);
-      existingRoles.forEach(function(r){
-        html+='<span class="tag-chip" data-value="'+esc(r)+'">'+esc(r)+'<span class="rm" onclick="removeTag(this,\'edit-roles-wrap\')"> &times;</span></span>';
-      });
-      html+='<input type="text" id="edit-role-input" list="role-suggestions" placeholder="Add role&#8230;" onkeydown="handleRoleKey(event,\'edit-roles-wrap\')">';
-      html+='</div></label>';
+      html+='<label style="min-width:220px">Pick role from list';
+      html+='<select id="edit-role-picker" onchange="appendRoleToInput()">';
+      html+='<option value="">&#8212; Select to add &#8212;</option>'+roleOpts;
+      html+='</select></label>';
+      html+='<label style="flex:1;min-width:260px">Role(s) &mdash; edit or type multiple (comma-separated)';
+      html+='<input type="text" id="edit-role" value="'+esc(u.role_name||'')+'" style="width:100%" placeholder="e.g. Admin, Manager"/>';
+      html+='</label>';
       if (u._type==='internal')
         html+='<label>Warehouse<select id="edit-wh"><option value="">&mdash; none &mdash;</option>'+whOpts+'</select></label>';
       html+='<label>Status<select id="edit-status">'+stOpts+'</select></label>';
@@ -616,13 +619,27 @@ function startEdit(userId, type) {
 }
 function cancelEdit(){ editingUserId=null; editingType=null; renderTable(); }
 
+// Append selected role from picker dropdown into the role text input
+function appendRoleToInput() {
+  var picker = document.getElementById('edit-role-picker');
+  var inp    = document.getElementById('edit-role');
+  var val    = (picker.value || '').trim();
+  if (!val || !inp) return;
+  var current = (inp.value || '').trim();
+  // Avoid duplicate
+  var existing = current.split(',').map(function(r){ return r.trim(); });
+  if (existing.indexOf(val) < 0) {
+    inp.value = current ? current + ', ' + val : val;
+  }
+  picker.value = ''; // reset picker
+}
+
 async function saveEdit(userId, type) {
   var btn=document.getElementById('save-btn');
   btn.disabled=true; btn.textContent='Saving…';
 
-  // Read values from DOM
-  var roleChips = getTagValues('edit-roles-wrap');
-  var roles     = roleChips.join(', ');
+  // Read role directly from text input — simple and reliable
+  var roles = (document.getElementById('edit-role').value || '').trim();
   var newStatus = document.getElementById('edit-status').value;
   var whEl      = document.getElementById('edit-wh');
   var newWh     = (type==='internal' && whEl) ? (whEl.value || null) : null;
@@ -634,7 +651,7 @@ async function saveEdit(userId, type) {
   var arr = type==='internal' ? INT : EXT;
   var old = arr.find(function(u){ return u.user_id===userId; }) || {};
 
-  console.log('[saveEdit] userId='+userId+' roles="'+roles+'" status='+newStatus+' chips='+JSON.stringify(roleChips));
+  console.log('[saveEdit] userId='+userId+' roles="'+roles+'" status='+newStatus);
 
   try {
     var table = type==='internal' ? 'internal_users' : 'external_users';
