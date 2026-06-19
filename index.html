@@ -23,19 +23,27 @@
 [data-theme="sunset"]{--bg:#1a0e00;--bg2:#2d1a00;--bg3:#4a2e00;--surface:#2d1a00;--border:#4a2e00;--text:#fef3c7;--text2:#fcd34d;--text3:#f59e0b;--accent:#f59e0b;--accent-t:rgba(245,158,11,.15);}
 [data-theme="purple"]{--bg:#0f0520;--bg2:#1a0a38;--bg3:#2d1258;--surface:#1a0a38;--border:#2d1258;--text:#ede9fe;--text2:#c4b5fd;--text3:#8b5cf6;--accent:#8b5cf6;--accent-t:rgba(139,92,246,.15);}
 [data-theme="ocean"]{--bg:#00181e;--bg2:#002a35;--bg3:#00445a;--surface:#002a35;--border:#00445a;--text:#ccfbf1;--text2:#5eead4;--text3:#14b8a6;--accent:#14b8a6;--accent-t:rgba(20,184,166,.15);}
+[data-theme="mono"]{--bg:#080808;--bg2:#111;--bg3:#1c1c1c;--surface:#111;--border:#2e2e2e;--text:#f0f0f0;--text2:#aaa;--text3:#555;--accent:#e0e0e0;--accent2:#bbb;--accent-t:rgba(224,224,224,.08);}
+[data-theme="white"]{--bg:#f5f5f5;--bg2:#fff;--bg3:#ececec;--surface:#fff;--border:#d0d0d0;--text:#111;--text2:#555;--text3:#999;--accent:#111;--accent2:#333;--accent-t:rgba(0,0,0,.06);--shadow:0 2px 16px rgba(0,0,0,.12);}
 
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
 
-.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+/* Header */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
 .logo{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
 .logo span{color:var(--accent)}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.theme-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;cursor:pointer;transition:.2s}
+.theme-btn,.add-user-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;cursor:pointer;transition:.2s}
 .theme-btn:hover{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
+.add-user-btn{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.add-user-btn:hover{opacity:.85}
 .stat-pill{background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text2)}
 .stat-pill b{color:var(--text)}
+.user-chip{background:var(--accent-t);border:1px solid var(--accent);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:6px}
+.user-chip:hover{opacity:.8}
 
+/* Controls */
 .controls{padding:16px 24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;background:var(--bg);border-bottom:1px solid var(--border)}
 .search-wrap{position:relative;flex:1;min-width:200px;max-width:380px}
 .search-wrap input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:9px 12px 9px 36px;border-radius:var(--radius-sm);font-size:13px;outline:none;transition:.2s}
@@ -47,9 +55,11 @@ select:focus{border-color:var(--accent)}
 .tab{padding:7px 18px;border-radius:5px;font-size:13px;cursor:pointer;color:var(--text2);transition:.2s;border:none;background:transparent}
 .tab.active{background:var(--accent);color:#fff;font-weight:600}
 .tab:not(.active):hover{background:var(--accent-t);color:var(--accent)}
+.tab.audit-tab.active{background:#8b5cf6}
 .refresh-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:9px 14px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
 .refresh-btn:hover{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
 
+/* Table */
 .table-wrap{padding:0 24px 24px;overflow-x:auto}
 table{width:100%;border-collapse:collapse;margin-top:16px;font-size:13px}
 thead th{background:var(--bg2);color:var(--text2);font-weight:600;text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);white-space:nowrap}
@@ -60,6 +70,7 @@ td{padding:10px 14px;vertical-align:middle;color:var(--text)}
 td.dim{color:var(--text2);font-size:12px}
 .no-data{text-align:center;padding:60px 20px;color:var(--text3)}
 
+/* Badges */
 .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .badge-1{background:var(--tag-active);color:var(--tag-active-t)}
 .badge-0{background:var(--tag-inactive);color:var(--tag-inactive-t)}
@@ -67,7 +78,9 @@ td.dim{color:var(--text2);font-size:12px}
 .badge-2{background:var(--tag-susp);color:var(--tag-susp-t)}
 .badge-5{background:var(--tag-pending);color:var(--tag-pending-t)}
 .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.role-chip{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--text2);margin:1px}
 
+/* Edit row */
 .edit-row td{padding:12px 14px;background:var(--bg3)}
 .edit-form{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .edit-form input,.edit-form select{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:var(--radius-sm);font-size:13px;outline:none}
@@ -81,6 +94,48 @@ td.dim{color:var(--text2);font-size:12px}
 .btn-cancel:hover{background:var(--bg3)}
 .edit-hint{font-size:11px;color:var(--text3);align-self:center}
 
+/* Tag / Multi-role input */
+.tag-input-wrap{min-width:280px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:5px 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;cursor:text;transition:.2s}
+.tag-input-wrap:focus-within{border-color:var(--accent)}
+.tag-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-t);border:1px solid var(--accent);color:var(--accent);border-radius:4px;padding:2px 8px;font-size:12px;white-space:nowrap}
+.tag-chip .rm{cursor:pointer;font-size:14px;line-height:1;opacity:.7}
+.tag-chip .rm:hover{opacity:1}
+.tag-input-wrap input{border:none;outline:none;background:transparent;color:var(--text);font-size:13px;min-width:120px;flex:1;padding:2px 4px}
+
+/* Audit log */
+.audit-wrap{padding:16px 24px 24px}
+.audit-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.audit-header h3{font-size:15px;color:var(--text)}
+.audit-filter input{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:var(--radius-sm);font-size:13px;outline:none;width:220px}
+.audit-filter input:focus{border-color:var(--accent)}
+.old-val{color:var(--tag-inactive-t);text-decoration:line-through;opacity:.7}
+.new-val{color:var(--tag-active-t);font-weight:600}
+.field-pill{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text2);font-family:monospace}
+.changed-by{color:var(--accent);font-weight:600}
+.audit-time{color:var(--text3);font-size:11px;white-space:nowrap}
+
+/* Modal base */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:500;padding:20px}
+.modal-overlay.hidden{display:none}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;width:500px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)}
+.modal h2{font-size:17px;margin-bottom:6px;color:var(--text)}
+.modal .modal-sub{font-size:12px;color:var(--text3);margin-bottom:22px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modal-grid.full{grid-template-columns:1fr}
+.modal label{font-size:11px;color:var(--text2);display:flex;flex-direction:column;gap:5px}
+.modal label>span.lbl{display:block}
+.modal input,.modal select,.modal textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;outline:none;width:100%}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:var(--accent)}
+.modal textarea{resize:vertical;min-height:60px}
+.modal-section{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+.modal .type-toggle{display:flex;gap:6px;margin-bottom:4px}
+.modal .type-opt{flex:1;padding:9px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:13px;cursor:pointer;text-align:center;transition:.2s}
+.modal .type-opt.active{border-color:var(--accent);background:var(--accent-t);color:var(--accent);font-weight:600}
+.req{color:#ef4444;margin-left:2px}
+.field-hidden{display:none}
+
+/* Loading */
 #loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:16px}
 .spinner{width:38px;height:38px;border:3px solid var(--bg3);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -88,25 +143,121 @@ td.dim{color:var(--text2);font-size:12px}
 .error-box h3{margin-bottom:8px}
 .error-box p{margin-top:6px;font-size:13px;line-height:1.6}
 
+/* Toast */
 #toast{position:fixed;bottom:24px;right:24px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 18px;font-size:13px;color:var(--text);box-shadow:var(--shadow);transform:translateY(100px);opacity:0;transition:.3s;z-index:999;max-width:320px}
 #toast.show{transform:none;opacity:1}
 #toast.success{border-color:#22c55e;color:#22c55e}
 #toast.error{border-color:#ef4444;color:#ef4444}
 
+/* Theme panel */
 #theme-panel{position:fixed;top:60px;right:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:none;z-index:200;box-shadow:var(--shadow)}
 #theme-panel.open{display:block}
-.theme-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:180px}
+.theme-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:200px}
 .theme-opt{padding:8px 10px;border-radius:var(--radius-sm);cursor:pointer;font-size:12px;text-align:center;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:.2s}
 .theme-opt:hover,.theme-opt.active{background:var(--accent-t);color:var(--accent);border-color:var(--accent)}
 </style>
 </head>
 <body>
 
+<!-- Identity Modal -->
+<div class="modal-overlay" id="identity-modal">
+  <div class="modal">
+    <h2>&#128100; Who are you?</h2>
+    <p class="modal-sub">Your name will be recorded in the audit log for every change you make.</p>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <label><span class="lbl">Full Name <span class="req">*</span></span>
+        <input type="text" id="identity-name" placeholder="e.g. Raj Mohan" autocomplete="name"/>
+      </label>
+      <label><span class="lbl">Email / Employee ID</span>
+        <input type="text" id="identity-email" placeholder="e.g. raj.mohan@6dtech.co.in"/>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-save" onclick="saveIdentity()">Continue &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit User Modal -->
+<div class="modal-overlay hidden" id="user-modal">
+  <div class="modal">
+    <h2 id="user-modal-title">&#43; Add New User</h2>
+    <p class="modal-sub" id="user-modal-sub">Fill in the details below. Dropdowns show existing values.</p>
+
+    <div class="modal-section">User Type</div>
+    <div class="type-toggle">
+      <div class="type-opt active" id="type-internal" onclick="setUserType('internal')">&#128101; Internal</div>
+      <div class="type-opt" id="type-external" onclick="setUserType('external')">&#127760; External</div>
+    </div>
+
+    <div class="modal-section">Identity</div>
+    <div class="modal-grid">
+      <label><span class="lbl">User ID <span class="req">*</span></span>
+        <input type="text" id="nu-user-id" placeholder="e.g. 20005126"/>
+      </label>
+      <label><span class="lbl">Username</span>
+        <input type="text" id="nu-user-name" placeholder="e.g. jdoe"/>
+      </label>
+      <label><span class="lbl">First Name</span>
+        <input type="text" id="nu-first-name" placeholder="John"/>
+      </label>
+      <label><span class="lbl">Last Name</span>
+        <input type="text" id="nu-last-name" placeholder="Doe"/>
+      </label>
+      <label><span class="lbl">Email</span>
+        <input type="email" id="nu-email" placeholder="john.doe@example.com"/>
+      </label>
+      <label><span class="lbl">Mobile Number</span>
+        <input type="text" id="nu-mobile" placeholder="+243xxxxxxxxx"/>
+      </label>
+    </div>
+
+    <div class="modal-section">Role &amp; Access</div>
+    <div class="modal-grid full">
+      <label>Role(s) &mdash; type and press Enter to add multiple
+        <div class="tag-input-wrap" id="nu-roles-wrap" onclick="document.getElementById('nu-role-input').focus()">
+          <input type="text" id="nu-role-input" placeholder="Type a role and press Enter&#8230;" onkeydown="handleRoleKey(event,'nu-roles-wrap')"/>
+        </div>
+      </label>
+    </div>
+    <div class="modal-grid">
+      <label><span class="lbl">Status</span>
+        <select id="nu-status">
+          <option value="6">Not Activated</option>
+          <option value="1">Active</option>
+          <option value="0">Inactive</option>
+          <option value="5">Pending</option>
+          <option value="2">Suspended</option>
+        </select>
+      </label>
+      <label id="nu-wh-label"><span class="lbl">Warehouse</span>
+        <select id="nu-warehouse"><option value="">&#8212; none &#8212;</option></select>
+      </label>
+      <label id="nu-desig-label"><span class="lbl">Designation ID</span>
+        <input type="text" id="nu-designation" placeholder="e.g. CG_123456"/>
+      </label>
+      <label id="nu-partner-label" class="field-hidden"><span class="lbl">Partner ID</span>
+        <input type="text" id="nu-partner" placeholder="e.g. 20004805"/>
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" onclick="closeUserModal()">Cancel</button>
+      <button class="btn btn-save" id="user-modal-save-btn" onclick="submitUserModal()">&#128190; Save User</button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
 <div class="header">
   <div class="logo">Airtel Ventas <span>USDM 2.0</span> &middot; User Explorer</div>
   <div class="stat-pill"><b id="stat-total">&#8211;</b> users</div>
   <div class="stat-pill"><b id="stat-active">&#8211;</b> active</div>
   <div class="header-right">
+    <button class="add-user-btn" onclick="openAddUser()">&#43; Add User</button>
+    <div class="user-chip" id="user-chip" onclick="promptIdentity()" title="Click to change">
+      <span>&#128100;</span><span id="user-chip-name">&#8230;</span>
+    </div>
     <button class="theme-btn" onclick="toggleThemePanel()">&#127912; Theme</button>
   </div>
 </div>
@@ -120,16 +271,20 @@ td.dim{color:var(--text2);font-size:12px}
     <div class="theme-opt" onclick="setTheme('sunset')">Sunset</div>
     <div class="theme-opt" onclick="setTheme('purple')">Purple</div>
     <div class="theme-opt" onclick="setTheme('ocean')">Ocean</div>
+    <div class="theme-opt" onclick="setTheme('mono')">&#9899; Mono</div>
+    <div class="theme-opt" onclick="setTheme('white')">&#9898; White</div>
   </div>
 </div>
 
+<!-- Controls -->
 <div class="controls">
   <div class="tabs">
     <button class="tab active" onclick="setTab('all',this)">All</button>
     <button class="tab" onclick="setTab('internal',this)">Internal</button>
     <button class="tab" onclick="setTab('external',this)">External</button>
+    <button class="tab audit-tab" onclick="setTab('audit',this)">&#128221; Audit Log</button>
   </div>
-  <div class="search-wrap">
+  <div class="search-wrap" id="search-wrap">
     <span class="search-icon">&#128269;</span>
     <input type="text" id="search" placeholder="Search name, email, role&#8230;" oninput="renderTable()"/>
   </div>
@@ -141,307 +296,447 @@ td.dim{color:var(--text2);font-size:12px}
     <option value="2">Suspended</option>
     <option value="5">Pending</option>
   </select>
-  <button class="refresh-btn" onclick="loadData()">&#8635; Refresh</button>
+  <button class="refresh-btn" onclick="refreshCurrent()">&#8635; Refresh</button>
 </div>
 
-<div id="loading"><div class="spinner"></div><p id="loading-msg">Connecting to database&hellip;</p></div>
+<div id="loading"><div class="spinner"></div><p>Connecting&#8230;</p></div>
 <div id="error-area"></div>
 <div class="table-wrap" id="table-wrap" style="display:none">
+  <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+</div>
+<div class="audit-wrap" id="audit-wrap" style="display:none">
+  <div class="audit-header">
+    <h3>&#128221; Audit Log &mdash; Change History</h3>
+    <div class="audit-filter">
+      <input type="text" id="audit-search" placeholder="Filter by user or editor&#8230;" oninput="renderAudit()"/>
+    </div>
+  </div>
   <table>
-    <thead id="thead"></thead>
-    <tbody id="tbody"></tbody>
+    <thead><tr>
+      <th>When</th><th>Changed By</th><th>User ID</th><th>User Name</th>
+      <th>Field</th><th>Old Value</th><th>New Value</th><th>Type</th>
+    </tr></thead>
+    <tbody id="audit-tbody"></tbody>
   </table>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// =====================================================================
-// CONFIGURATION — replace these two values with your Supabase credentials
-// =====================================================================
 var SUPABASE_URL = 'https://vgiwqwaqbitynwfekuip.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnaXdxd2FxYml0eW53ZmVrdWlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NjExMDIsImV4cCI6MjA5NzQzNzEwMn0.CNd5gP4iWeXZ7bZ-Jsur9awPtQrpcySHBiWr7OG5D3Q';
-// =====================================================================
 
 var db;
-var WH  = {};   // warehouse_id -> warehouse_name
-var INT = [];   // internal users array
-var EXT = [];   // external users array
-var currentTab = 'all';
+var WH    = {};
+var INT   = [];
+var EXT   = [];
+var AUDIT = [];
+var ROLES = [];   // collected role suggestions
+var currentTab    = 'all';
 var editingUserId = null;
 var editingType   = null;
+var currentUser   = { name:'', email:'' };
+var newUserType   = 'internal';
+var editingNewUser = false;   // true = modal in edit mode
 
-var STATUS_LABELS = { '1':'Active','0':'Inactive','6':'Not Activated','2':'Suspended','5':'Pending' };
+var STATUS_LABELS = {'1':'Active','0':'Inactive','6':'Not Activated','2':'Suspended','5':'Pending'};
 
-// Init
+// ─── Identity ──────────────────────────────────────────────────────────
+function loadIdentity() {
+  var n = localStorage.getItem('usdm-user-name')  || '';
+  var e = localStorage.getItem('usdm-user-email') || '';
+  if (n) {
+    currentUser = {name:n, email:e};
+    document.getElementById('user-chip-name').textContent = n;
+    document.getElementById('identity-modal').classList.add('hidden');
+  }
+}
+function saveIdentity() {
+  var n = (document.getElementById('identity-name').value  || '').trim();
+  var e = (document.getElementById('identity-email').value || '').trim();
+  if (!n) { alert('Please enter your name.'); return; }
+  currentUser = {name:n, email:e};
+  localStorage.setItem('usdm-user-name',  n);
+  localStorage.setItem('usdm-user-email', e);
+  document.getElementById('user-chip-name').textContent = n;
+  document.getElementById('identity-modal').classList.add('hidden');
+}
+function promptIdentity() {
+  document.getElementById('identity-name').value  = currentUser.name;
+  document.getElementById('identity-email').value = currentUser.email;
+  document.getElementById('identity-modal').classList.remove('hidden');
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────
 window.onload = function() {
-  // Restore theme
-  var savedTheme = localStorage.getItem('usdm-theme') || '';
-  if (savedTheme) setTheme(savedTheme);
-
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
-    showLoading(false);
-    showError('Supabase not configured',
-      'Open this HTML file in a text editor and replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY with your Supabase project credentials. See the setup guide for details.');
-    return;
-  }
-
-  try {
-    db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  } catch(e) {
-    showError('Failed to initialise Supabase client', e.message);
-    return;
-  }
+  var t = localStorage.getItem('usdm-theme') || '';
+  if (t) setTheme(t);
+  loadIdentity();
+  db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   loadData();
 };
 
-// ── Load data ──────────────────────────────────────────────────────────
+// ─── Load data ─────────────────────────────────────────────────────────
 async function loadData() {
-  showLoading(true);
-  hideError();
+  showLoading(true); hideError();
   try {
-    var results = await Promise.all([
+    var r = await Promise.all([
       db.from('warehouses').select('*').order('warehouse_name'),
       db.from('internal_users').select('*').order('first_name'),
       db.from('external_users').select('*').order('first_name')
     ]);
-    var whRes = results[0], intRes = results[1], extRes = results[2];
-    if (whRes.error)  throw whRes.error;
-    if (intRes.error) throw intRes.error;
-    if (extRes.error) throw extRes.error;
-
+    if (r[0].error) throw r[0].error;
+    if (r[1].error) throw r[1].error;
+    if (r[2].error) throw r[2].error;
     WH = {};
-    (whRes.data || []).forEach(function(w) { WH[w.warehouse_id] = w.warehouse_name; });
-    INT = (intRes.data || []).map(function(u) { return Object.assign({}, u, {_type:'internal'}); });
-    EXT = (extRes.data || []).map(function(u) { return Object.assign({}, u, {_type:'external'}); });
-
-    updateStats();
-    renderTable();
-    showLoading(false);
-  } catch(err) {
-    showError('Failed to load data', (err && err.message) ? err.message : String(err));
-  }
-}
-
-// ── Stats ──────────────────────────────────────────────────────────────
-function updateStats() {
-  var all = INT.concat(EXT);
-  document.getElementById('stat-total').textContent  = all.length;
-  document.getElementById('stat-active').textContent = all.filter(function(u){ return u.status === '1'; }).length;
-}
-
-// ── Tabs ───────────────────────────────────────────────────────────────
-function setTab(tab, btn) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  btn.classList.add('active');
-  editingUserId = null;
-  editingType   = null;
-  renderTable();
-}
-
-// ── Filter rows ────────────────────────────────────────────────────────
-function getRows() {
-  var rows = currentTab === 'internal' ? INT.slice()
-           : currentTab === 'external' ? EXT.slice()
-           : INT.concat(EXT);
-  var q  = (document.getElementById('search').value || '').toLowerCase();
-  var st = document.getElementById('status-filter').value;
-  if (q) {
-    rows = rows.filter(function(u) {
-      return (u.first_name||'').toLowerCase().indexOf(q)>=0
-          || (u.last_name||'').toLowerCase().indexOf(q)>=0
-          || (u.user_name||'').toLowerCase().indexOf(q)>=0
-          || (u.email_id||'').toLowerCase().indexOf(q)>=0
-          || (u.role_name||'').toLowerCase().indexOf(q)>=0
-          || (u.user_id||'').toLowerCase().indexOf(q)>=0;
+    (r[0].data||[]).forEach(function(w){ WH[w.warehouse_id]=w.warehouse_name; });
+    INT = (r[1].data||[]).map(function(u){ return Object.assign({},u,{_type:'internal'}); });
+    EXT = (r[2].data||[]).map(function(u){ return Object.assign({},u,{_type:'external'}); });
+    // Collect role suggestions
+    var rs = {};
+    INT.concat(EXT).forEach(function(u){
+      (u.role_name||'').split(',').forEach(function(r){ var t=r.trim(); if(t) rs[t]=1; });
     });
+    ROLES = Object.keys(rs).sort();
+    updateStats(); renderTable(); showLoading(false);
+  } catch(err) { showError('Failed to load data',(err&&err.message)||String(err)); }
+}
+
+async function loadAudit() {
+  try {
+    var res = await db.from('audit_log').select('*').order('changed_at',{ascending:false}).limit(500);
+    if (res.error) throw res.error;
+    AUDIT = res.data||[];
+    renderAudit();
+  } catch(err) {
+    document.getElementById('audit-tbody').innerHTML='<tr><td colspan="8" class="no-data">Could not load: '+esc(err.message)+'</td></tr>';
   }
-  if (st) rows = rows.filter(function(u){ return u.status === st; });
+}
+
+// ─── Stats ─────────────────────────────────────────────────────────────
+function updateStats() {
+  var all=INT.concat(EXT);
+  document.getElementById('stat-total').textContent  = all.length;
+  document.getElementById('stat-active').textContent = all.filter(function(u){return u.status==='1';}).length;
+}
+
+// ─── Tabs ──────────────────────────────────────────────────────────────
+function setTab(tab,btn) {
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  btn.classList.add('active');
+  editingUserId=null; editingType=null;
+  var isAudit=tab==='audit';
+  document.getElementById('table-wrap').style.display  = isAudit?'none':'';
+  document.getElementById('audit-wrap').style.display  = isAudit?'':'none';
+  document.getElementById('search-wrap').style.display = isAudit?'none':'';
+  document.getElementById('status-filter').style.display = isAudit?'none':'';
+  if (isAudit) loadAudit(); else renderTable();
+}
+function refreshCurrent(){ if(currentTab==='audit') loadAudit(); else loadData(); }
+
+// ─── Filter rows ───────────────────────────────────────────────────────
+function getRows() {
+  var rows = currentTab==='internal'?INT.slice():currentTab==='external'?EXT.slice():INT.concat(EXT);
+  var q=(document.getElementById('search').value||'').toLowerCase();
+  var st=document.getElementById('status-filter').value;
+  if (q) rows=rows.filter(function(u){
+    return (u.first_name||'').toLowerCase().indexOf(q)>=0
+        || (u.last_name||'').toLowerCase().indexOf(q)>=0
+        || (u.user_name||'').toLowerCase().indexOf(q)>=0
+        || (u.email_id||'').toLowerCase().indexOf(q)>=0
+        || (u.role_name||'').toLowerCase().indexOf(q)>=0
+        || (u.user_id||'').toLowerCase().indexOf(q)>=0;
+  });
+  if (st) rows=rows.filter(function(u){return u.status===st;});
   return rows;
 }
 
-// ── Render table ───────────────────────────────────────────────────────
+// ─── Render table ──────────────────────────────────────────────────────
 function renderTable() {
-  var rows   = getRows();
-  var showWH = currentTab !== 'external';
-  var showPT = currentTab !== 'internal';
-  var showTY = currentTab === 'all';
+  var rows=getRows(), showWH=currentTab!=='external', showPT=currentTab!=='internal', showTY=currentTab==='all';
+  var th='<tr><th>User ID</th><th>Name</th><th>Email</th><th>Role(s)</th>';
+  if (showWH) th+='<th>Warehouse</th>';
+  if (showPT) th+='<th>Partner ID</th>';
+  if (showTY) th+='<th>Type</th>';
+  th+='<th>Status</th><th>Action</th></tr>';
+  document.getElementById('thead').innerHTML=th;
+  var tbody=document.getElementById('tbody');
+  if (!rows.length){ tbody.innerHTML='<tr><td colspan="9" class="no-data">No users found.</td></tr>'; document.getElementById('table-wrap').style.display=''; return; }
+  var html='';
+  rows.forEach(function(u){
+    var isEdit=editingUserId===u.user_id&&editingType===u._type;
+    var name=[u.first_name,u.last_name].filter(Boolean).join(' ')||u.user_name||'&mdash;';
+    var wName=WH[u.warehouse_id]||u.warehouse_id||'&mdash;';
+    // Multi-role display
+    var roleHtml=(u.role_name||'').split(',').map(function(r){
+      var t=r.trim(); return t?'<span class="role-chip">'+esc(t)+'</span>':'';
+    }).join('') || '&mdash;';
 
-  // Header
-  var th = '<tr>';
-  th += '<th>User ID</th><th>Name</th><th>Email</th><th>Role</th>';
-  if (showWH) th += '<th>Warehouse</th>';
-  if (showPT) th += '<th>Partner ID</th>';
-  if (showTY) th += '<th>Type</th>';
-  th += '<th>Status</th><th>Action</th></tr>';
-  document.getElementById('thead').innerHTML = th;
+    html+='<tr class="'+(isEdit?'editing':'')+'" id="row-'+u._type+'-'+esc(u.user_id)+'">';
+    html+='<td class="dim">'+esc(u.user_id)+'</td>';
+    html+='<td><b>'+esc(name)+'</b></td>';
+    html+='<td class="dim">'+esc(u.email_id||'—')+'</td>';
+    html+='<td>'+roleHtml+'</td>';
+    if (showWH) html+='<td class="dim">'+(u._type==='internal'?esc(wName):'&mdash;')+'</td>';
+    if (showPT) html+='<td class="dim">'+(u._type==='external'?esc(u.partner_id||'—'):'&mdash;')+'</td>';
+    if (showTY) html+='<td><span class="badge" style="background:var(--accent-t);color:var(--accent)">'+(u._type==='internal'?'Internal':'External')+'</span></td>';
+    html+='<td>'+badge(u.status)+'</td>';
+    html+='<td><button class="btn btn-cancel" style="font-size:11px;padding:5px 10px" onclick="startEdit(\''+esc(u.user_id)+'\',\''+u._type+'\')">&#9998; Edit</button></td>';
+    html+='</tr>';
 
-  var tbody = document.getElementById('tbody');
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
-    document.getElementById('table-wrap').style.display = '';
-    return;
-  }
-
-  var html = '';
-  rows.forEach(function(u) {
-    var isEditing = editingUserId === u.user_id && editingType === u._type;
-    var name = [u.first_name, u.last_name].filter(Boolean).join(' ') || u.user_name || '&mdash;';
-    var wName = WH[u.warehouse_id] || u.warehouse_id || '&mdash;';
-
-    html += '<tr class="' + (isEditing ? 'editing' : '') + '" id="row-' + u._type + '-' + esc(u.user_id) + '">';
-    html += '<td class="dim">' + esc(u.user_id) + '</td>';
-    html += '<td><b>' + esc(name) + '</b></td>';
-    html += '<td class="dim">' + esc(u.email_id || '—') + '</td>';
-    html += '<td>' + esc(u.role_name || '—') + '</td>';
-    if (showWH) {
-      if (u._type === 'internal') html += '<td class="dim">' + esc(wName) + '</td>';
-      else if (!showTY)           html += '<td class="dim">&mdash;</td>';
-      else                        html += '<td class="dim">&mdash;</td>';
-    }
-    if (showPT) {
-      if (u._type === 'external') html += '<td class="dim">' + esc(u.partner_id || '—') + '</td>';
-      else                        html += '<td class="dim">&mdash;</td>';
-    }
-    if (showTY) {
-      html += '<td><span class="badge" style="background:var(--accent-t);color:var(--accent)">'
-            + (u._type === 'internal' ? 'Internal' : 'External') + '</span></td>';
-    }
-    html += '<td>' + badge(u.status) + '</td>';
-    html += '<td><button class="btn btn-cancel" style="font-size:11px;padding:5px 10px" '
-          + 'onclick="startEdit(\'' + esc(u.user_id) + '\',\'' + u._type + '\')">&#9998; Edit</button></td>';
-    html += '</tr>';
-
-    if (isEditing) {
-      var whOptions = Object.keys(WH).map(function(id) {
-        return '<option value="' + esc(id) + '"' + (u.warehouse_id === id ? ' selected' : '') + '>'
-             + esc(WH[id]) + ' (' + esc(id) + ')</option>';
+    if (isEdit) {
+      var whOpts=Object.keys(WH).map(function(id){
+        return '<option value="'+esc(id)+'"'+(u.warehouse_id===id?' selected':'')+'>'+esc(WH[id])+' ('+esc(id)+')</option>';
       }).join('');
-      var stOptions = Object.keys(STATUS_LABELS).map(function(v) {
-        return '<option value="' + v + '"' + (u.status === v ? ' selected' : '') + '>' + STATUS_LABELS[v] + '</option>';
+      var stOpts=Object.keys(STATUS_LABELS).map(function(v){
+        return '<option value="'+v+'"'+(u.status===v?' selected':'')+'>'+STATUS_LABELS[v]+'</option>';
       }).join('');
 
-      html += '<tr class="edit-row"><td colspan="9"><div class="edit-form">'
-            + '<label>Role Name<input id="edit-role" value="' + esc(u.role_name || '') + '" style="width:220px"/></label>';
-      if (u._type === 'internal') {
-        html += '<label>Warehouse<select id="edit-wh"><option value="">&mdash; none &mdash;</option>' + whOptions + '</select></label>';
-      }
-      html += '<label>Status<select id="edit-status">' + stOptions + '</select></label>'
-            + '<button class="btn btn-save" id="save-btn" onclick="saveEdit(\'' + esc(u.user_id) + '\',\'' + u._type + '\')">&#128190; Save</button>'
-            + '<button class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>'
-            + '<span class="edit-hint">Changes save to the database</span>'
-            + '</div></td></tr>';
+      html+='<tr class="edit-row"><td colspan="9"><div class="edit-form">';
+      html+='<label style="flex:1;min-width:280px">Role(s) &mdash; press Enter to add';
+      html+='<div class="tag-input-wrap" id="edit-roles-wrap" onclick="document.getElementById(\'edit-role-input\').focus()">';
+      // render existing role chips
+      var existingRoles=(u.role_name||'').split(',').map(function(r){return r.trim();}).filter(Boolean);
+      existingRoles.forEach(function(r){
+        html+='<span class="tag-chip">'+esc(r)+'<span class="rm" onclick="removeTag(this,\'edit-roles-wrap\')">&#215;</span></span>';
+      });
+      html+='<input type="text" id="edit-role-input" list="role-suggestions" placeholder="Add role&#8230;" onkeydown="handleRoleKey(event,\'edit-roles-wrap\')">';
+      html+='</div></label>';
+      if (u._type==='internal')
+        html+='<label>Warehouse<select id="edit-wh"><option value="">&mdash; none &mdash;</option>'+whOpts+'</select></label>';
+      html+='<label>Status<select id="edit-status">'+stOpts+'</select></label>';
+      html+='<button class="btn btn-save" id="save-btn" onclick="saveEdit(\''+esc(u.user_id)+'\',\''+u._type+'\')">&#128190; Save</button>';
+      html+='<button class="btn btn-cancel" onclick="cancelEdit()">Cancel</button>';
+      html+='<span class="edit-hint">Logged as: <b>'+esc(currentUser.name)+'</b></span>';
+      html+='</div></td></tr>';
     }
   });
-  tbody.innerHTML = html;
-  document.getElementById('table-wrap').style.display = '';
+  // Role datalist for autocomplete
+  html+='<datalist id="role-suggestions">'+ROLES.map(function(r){return '<option value="'+esc(r)+'"/>';}).join('')+'</datalist>';
+  tbody.innerHTML=html;
+  document.getElementById('table-wrap').style.display='';
 }
 
-function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function badge(status){ var l=STATUS_LABELS[status]||status; return '<span class="badge badge-'+status+'"><span class="dot"></span>'+l+'</span>'; }
+
+// ─── Tag input ─────────────────────────────────────────────────────────
+function handleRoleKey(e, wrapId) {
+  if (e.key==='Enter'||e.key===',') {
+    e.preventDefault();
+    var inp=e.target, val=inp.value.trim().replace(/,$/,'');
+    if (!val) return;
+    addTag(val, wrapId);
+    inp.value='';
+  } else if (e.key==='Backspace' && e.target.value==='') {
+    var wrap=document.getElementById(wrapId);
+    var chips=wrap.querySelectorAll('.tag-chip');
+    if (chips.length) chips[chips.length-1].remove();
+  }
+}
+function addTag(val, wrapId) {
+  var wrap=document.getElementById(wrapId);
+  var inp=wrap.querySelector('input');
+  // Prevent duplicate
+  var existing=Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){return c.textContent.replace('×','').trim();});
+  if (existing.indexOf(val)>=0) return;
+  var chip=document.createElement('span');
+  chip.className='tag-chip';
+  chip.innerHTML=esc(val)+'<span class="rm" onclick="removeTag(this,\''+wrapId+'\')">&#215;</span>';
+  wrap.insertBefore(chip, inp);
+}
+function removeTag(rmEl, wrapId) { rmEl.parentElement.remove(); }
+function getTagValues(wrapId) {
+  var wrap=document.getElementById(wrapId);
+  return Array.from(wrap.querySelectorAll('.tag-chip')).map(function(c){ return c.textContent.replace('×','').trim(); });
 }
 
-function badge(status) {
-  var label = STATUS_LABELS[status] || status;
-  return '<span class="badge badge-' + status + '"><span class="dot"></span>' + label + '</span>';
+// ─── Audit render ──────────────────────────────────────────────────────
+function renderAudit() {
+  var q=(document.getElementById('audit-search').value||'').toLowerCase();
+  var rows=AUDIT.filter(function(r){
+    if(!q) return true;
+    return (r.changed_by||'').toLowerCase().indexOf(q)>=0
+        || (r.record_id||'').toLowerCase().indexOf(q)>=0
+        || (r.user_name||'').toLowerCase().indexOf(q)>=0
+        || (r.field||'').toLowerCase().indexOf(q)>=0;
+  });
+  if (!rows.length){ document.getElementById('audit-tbody').innerHTML='<tr><td colspan="8" class="no-data">No records found.</td></tr>'; return; }
+  var html='';
+  rows.forEach(function(r){
+    var dt=new Date(r.changed_at);
+    var ds=dt.toLocaleDateString('en-IN')+' '+dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    html+='<tr><td class="audit-time">'+ds+'</td>'
+        +'<td class="changed-by">'+esc(r.changed_by)+'</td>'
+        +'<td class="dim">'+esc(r.record_id)+'</td>'
+        +'<td>'+esc(r.user_name||'—')+'</td>'
+        +'<td><span class="field-pill">'+esc(r.field)+'</span></td>'
+        +'<td><span class="old-val">'+esc(r.old_value||'—')+'</span></td>'
+        +'<td><span class="new-val">'+esc(r.new_value||'—')+'</span></td>'
+        +'<td><span class="badge" style="background:var(--accent-t);color:var(--accent)">'+(r.table_name==='internal_users'?'Internal':'External')+'</span></td>'
+        +'</tr>';
+  });
+  document.getElementById('audit-tbody').innerHTML=html;
 }
 
-// ── Edit ───────────────────────────────────────────────────────────────
+// ─── Edit user ─────────────────────────────────────────────────────────
 function startEdit(userId, type) {
-  if (editingUserId === userId && editingType === type) { cancelEdit(); return; }
-  editingUserId = userId;
-  editingType   = type;
+  if (!currentUser.name){ promptIdentity(); return; }
+  if (editingUserId===userId&&editingType===type){ cancelEdit(); return; }
+  editingUserId=userId; editingType=type;
   renderTable();
-  setTimeout(function() {
-    var row = document.getElementById('row-' + type + '-' + userId);
-    if (row) row.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  }, 50);
+  setTimeout(function(){
+    var row=document.getElementById('row-'+type+'-'+userId);
+    if(row) row.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
 }
-
-function cancelEdit() {
-  editingUserId = null;
-  editingType   = null;
-  renderTable();
-}
+function cancelEdit(){ editingUserId=null; editingType=null; renderTable(); }
 
 async function saveEdit(userId, type) {
-  var btn = document.getElementById('save-btn');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
+  var btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='Saving…';
 
-  var role   = document.getElementById('edit-role').value.trim();
-  var status = document.getElementById('edit-status').value;
-  var updates = { role_name: role, status: status };
+  var roles   = getTagValues('edit-roles-wrap').join(', ');
+  var newStatus = document.getElementById('edit-status').value;
+  var newWh   = type==='internal'?(document.getElementById('edit-wh')||{}).value||null:undefined;
+  var updates = {role_name:roles, status:newStatus};
+  if (type==='internal') updates.warehouse_id=newWh||null;
 
-  if (type === 'internal') {
-    var whEl = document.getElementById('edit-wh');
-    updates.warehouse_id = whEl ? (whEl.value || null) : null;
-  }
+  var arr=type==='internal'?INT:EXT;
+  var old=arr.find(function(u){return u.user_id===userId;})||{};
 
   try {
-    var table = type === 'internal' ? 'internal_users' : 'external_users';
-    var result = await db.from(table).update(updates).eq('user_id', userId);
-    if (result.error) throw result.error;
+    var table=type==='internal'?'internal_users':'external_users';
+    var res=await db.from(table).update(updates).eq('user_id',userId);
+    if (res.error) throw res.error;
 
-    // Update local cache
-    var arr = type === 'internal' ? INT : EXT;
-    var idx = arr.findIndex(function(u){ return u.user_id === userId; });
-    if (idx >= 0) arr[idx] = Object.assign({}, arr[idx], updates);
+    var changedBy=currentUser.name+(currentUser.email?' ('+currentUser.email+')':'');
+    var uName=[old.first_name,old.last_name].filter(Boolean).join(' ')||old.user_name||userId;
+    var auditRows=[];
+    function ar(field,ov,nv){ auditRows.push({table_name:table,record_id:userId,user_name:uName,field:field,old_value:String(ov||''),new_value:String(nv||''),changed_by:changedBy}); }
+    if (old.role_name!==roles) ar('role_name',old.role_name,roles);
+    if (old.status!==newStatus) ar('status',STATUS_LABELS[old.status]||old.status,STATUS_LABELS[newStatus]||newStatus);
+    if (type==='internal'&&old.warehouse_id!==(newWh||null)) ar('warehouse_id',WH[old.warehouse_id]||old.warehouse_id,WH[newWh]||newWh||'(none)');
+    if (auditRows.length){ var ar2=await db.from('audit_log').insert(auditRows); if(ar2.error) console.warn('Audit:',ar2.error.message); }
 
-    updateStats();
-    cancelEdit();
-    toast('Saved successfully', 'success');
-  } catch(err) {
-    btn.disabled = false;
-    btn.textContent = '💾 Save';
-    toast('Save failed: ' + ((err && err.message) ? err.message : String(err)), 'error');
+    var idx=arr.findIndex(function(u){return u.user_id===userId;});
+    if (idx>=0) arr[idx]=Object.assign({},arr[idx],updates);
+    updateStats(); cancelEdit(); toast('Saved & logged','success');
+  } catch(err){
+    btn.disabled=false; btn.textContent='💾 Save';
+    toast('Save failed: '+((err&&err.message)||String(err)),'error');
   }
 }
 
-// ── Theme ──────────────────────────────────────────────────────────────
-function setTheme(name) {
-  document.documentElement.setAttribute('data-theme', name);
-  localStorage.setItem('usdm-theme', name);
-  document.querySelectorAll('.theme-opt').forEach(function(el) {
-    el.classList.toggle('active', el.textContent.toLowerCase() === (name || 'navy'));
+// ─── Add New User Modal ────────────────────────────────────────────────
+function openAddUser() {
+  if (!currentUser.name){ promptIdentity(); return; }
+  document.getElementById('user-modal-title').textContent='+ Add New User';
+  document.getElementById('user-modal-sub').textContent='Fill in the details below. Dropdowns show existing values.';
+  document.getElementById('user-modal-save-btn').textContent='💾 Save User';
+  // Reset fields
+  ['nu-user-id','nu-user-name','nu-first-name','nu-last-name','nu-email','nu-mobile','nu-designation','nu-partner'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('nu-status').value='6';
+  // Reset roles
+  var wrap=document.getElementById('nu-roles-wrap');
+  wrap.querySelectorAll('.tag-chip').forEach(function(c){c.remove();});
+  document.getElementById('nu-role-input').value='';
+  // Populate warehouse dropdown
+  var wsel=document.getElementById('nu-warehouse');
+  wsel.innerHTML='<option value="">— none —</option>';
+  Object.keys(WH).sort(function(a,b){return WH[a].localeCompare(WH[b]);}).forEach(function(id){
+    var o=document.createElement('option'); o.value=id; o.textContent=WH[id]+' ('+id+')'; wsel.appendChild(o);
+  });
+  setUserType('internal');
+  document.getElementById('user-modal').classList.remove('hidden');
+}
+
+function closeUserModal(){ document.getElementById('user-modal').classList.add('hidden'); }
+
+function setUserType(type) {
+  newUserType=type;
+  document.getElementById('type-internal').classList.toggle('active',type==='internal');
+  document.getElementById('type-external').classList.toggle('active',type==='external');
+  document.getElementById('nu-wh-label').classList.toggle('field-hidden',type!=='internal');
+  document.getElementById('nu-desig-label').classList.toggle('field-hidden',type!=='internal');
+  document.getElementById('nu-partner-label').classList.toggle('field-hidden',type!=='external');
+}
+
+async function submitUserModal() {
+  var userId = (document.getElementById('nu-user-id').value||'').trim();
+  if (!userId){ alert('User ID is required.'); return; }
+
+  var roles  = getTagValues('nu-roles-wrap').join(', ');
+  var record = {
+    user_id:    userId,
+    user_name:  (document.getElementById('nu-user-name').value||'').trim(),
+    first_name: (document.getElementById('nu-first-name').value||'').trim(),
+    last_name:  (document.getElementById('nu-last-name').value||'').trim(),
+    email_id:   (document.getElementById('nu-email').value||'').trim(),
+    mobile_number: (document.getElementById('nu-mobile').value||'').trim(),
+    role_name:  roles,
+    status:     document.getElementById('nu-status').value,
+    user_type:  newUserType==='internal'?'1':'2'
+  };
+  if (newUserType==='internal'){
+    record.designation_id = (document.getElementById('nu-designation').value||'').trim();
+    record.warehouse_id   = document.getElementById('nu-warehouse').value||null;
+  } else {
+    record.partner_id = (document.getElementById('nu-partner').value||'').trim();
+  }
+
+  var saveBtn=document.getElementById('user-modal-save-btn');
+  saveBtn.disabled=true; saveBtn.textContent='Saving…';
+
+  try {
+    var table=newUserType==='internal'?'internal_users':'external_users';
+    var res=await db.from(table).insert([record]);
+    if (res.error) throw res.error;
+
+    var changedBy=currentUser.name+(currentUser.email?' ('+currentUser.email+')':'');
+    var uName=[record.first_name,record.last_name].filter(Boolean).join(' ')||record.user_name||userId;
+    await db.from('audit_log').insert([{
+      table_name:table, record_id:userId, user_name:uName,
+      field:'NEW_USER', old_value:'', new_value:'User created',
+      changed_by:changedBy
+    }]);
+
+    // Update local cache
+    var newU=Object.assign({},record,{_type:newUserType});
+    if (newUserType==='internal') INT.push(newU); else EXT.push(newU);
+    updateStats(); closeUserModal(); cancelEdit(); renderTable();
+    toast('User '+userId+' added successfully','success');
+  } catch(err){
+    saveBtn.disabled=false; saveBtn.textContent='💾 Save User';
+    toast('Failed: '+((err&&err.message)||String(err)),'error');
+  }
+}
+
+// ─── Theme ─────────────────────────────────────────────────────────────
+function setTheme(name){
+  document.documentElement.setAttribute('data-theme',name);
+  localStorage.setItem('usdm-theme',name);
+  document.querySelectorAll('.theme-opt').forEach(function(el){
+    var label=el.textContent.replace(/[^\w ]/g,'').trim().toLowerCase();
+    el.classList.toggle('active',label===(name||'navy'));
   });
   document.getElementById('theme-panel').classList.remove('open');
 }
-function toggleThemePanel() {
-  document.getElementById('theme-panel').classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#theme-panel') && !e.target.closest('.theme-btn'))
+function toggleThemePanel(){ document.getElementById('theme-panel').classList.toggle('open'); }
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#theme-panel')&&!e.target.closest('.theme-btn'))
     document.getElementById('theme-panel').classList.remove('open');
 });
 
-// ── Toast ──────────────────────────────────────────────────────────────
+// ─── Toast ─────────────────────────────────────────────────────────────
 var toastTimer;
-function toast(msg, type) {
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'show ' + (type || '');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ el.className = ''; }, 3500);
-}
+function toast(msg,type){ var el=document.getElementById('toast'); el.textContent=msg; el.className='show '+(type||''); clearTimeout(toastTimer); toastTimer=setTimeout(function(){el.className='';},3500); }
 
-// ── Loading / Error ────────────────────────────────────────────────────
-function showLoading(show) {
-  document.getElementById('loading').style.display = show ? 'flex' : 'none';
-  if (!show) document.getElementById('table-wrap').style.display = '';
-}
-function showError(title, detail) {
-  showLoading(false);
-  document.getElementById('table-wrap').style.display = 'none';
-  document.getElementById('error-area').innerHTML =
-    '<div class="error-box"><h3>&#9888;&#65039; ' + esc(title) + '</h3>'
-    + '<p>' + esc(detail || '') + '</p>'
-    + '<p>Make sure SUPABASE_URL and SUPABASE_KEY at the top of this file are set correctly.</p></div>';
-}
-function hideError() {
-  document.getElementById('error-area').innerHTML = '';
-}
+// ─── Loading/Error ──────────────────────────────────────────────────────
+function showLoading(show){ document.getElementById('loading').style.display=show?'flex':'none'; if(!show) document.getElementById('table-wrap').style.display=''; }
+function showError(title,detail){ showLoading(false); document.getElementById('table-wrap').style.display='none'; document.getElementById('error-area').innerHTML='<div class="error-box"><h3>&#9888;&#65039; '+esc(title)+'</h3><p>'+esc(detail||'')+'</p></div>'; }
+function hideError(){ document.getElementById('error-area').innerHTML=''; }
 </script>
 </body>
 </html>
